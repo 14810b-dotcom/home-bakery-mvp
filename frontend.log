@@ -81,3 +81,11 @@
 ✓ Compiled in 20ms
  GET / 200 in 25ms (next.js: 4ms, application-code: 21ms)
  GET / 200 in 11ms (next.js: 1194µs, application-code: 10ms)
+ GET / 200 in 31ms (next.js: 4ms, application-code: 27ms)
+ GET /api/homepage 200 in 5ms (next.js: 4ms, application-code: 1874µs)
+  Reload env: .env.local
+ GET / 200 in 77ms (next.js: 43ms, application-code: 34ms)
+ GET / 200 in 16ms (next.js: 1191µs, application-code: 15ms)
+ GET /api/homepage 200 in 31ms (next.js: 26ms, application-code: 5ms)
+✓ Compiled in 31ms
+ GET /api/homepage 200 in 4ms (next.js: 1705µs, application-code: 1975µs)

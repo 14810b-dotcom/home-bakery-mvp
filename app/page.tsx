@@ -19,21 +19,10 @@ interface Product {
 }
 
 export default function HomePage() {
-  // --- СТЕЙТЫ ---
-  const [language, setLanguage] = useState<Language>("en");
+  // --- СТЕЙТЫ МИНИ-КВИЗА ---
+  const [step, setStep] = useState<0 | 1 | 2>(0);
+  const [language, setLanguage] = useState<Language | null>(null);
   const [clientMode, setClientMode] = useState<ClientMode | null>(null);
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("foodlodge_lang") as Language | null;
-    if (savedLang === "en" || savedLang === "tr") {
-      setLanguage(savedLang);
-    }
-  }, []);
-
-  const changeLanguage = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem("foodlodge_lang", lang);
-  };
   
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -45,6 +34,21 @@ export default function HomePage() {
   const [formCompany, setFormCompany] = useState("");
   const [formPhone, setFormPhone] = useState("");
   const [formMessage, setFormMessage] = useState("");
+
+  // Реставрация сессии
+  useEffect(() => {
+    const savedLang = localStorage.getItem("foodlodge_lang") as Language | null;
+    const savedMode = localStorage.getItem("foodlodge_mode") as ClientMode | null;
+    
+    if (savedLang && savedMode) {
+      setLanguage(savedLang);
+      setClientMode(savedMode);
+      setStep(2);
+    } else if (savedLang) {
+      setLanguage(savedLang);
+      setStep(1);
+    }
+  }, []);
 
   // --- ФЕТЧ ИЗ API ---
   useEffect(() => {
@@ -61,6 +65,28 @@ export default function HomePage() {
     };
     fetchProducts();
   }, []);
+
+  // --- ЛОГИКА ШАГОВ ---
+  const handleLangSelect = (lang: Language) => {
+    setLanguage(lang);
+    localStorage.setItem("foodlodge_lang", lang);
+    setStep(1);
+  };
+
+  const handleModeSelect = (mode: ClientMode) => {
+    setClientMode(mode);
+    localStorage.setItem("foodlodge_mode", mode);
+    setStep(2);
+  };
+
+  const handleLogoClick = () => {
+    // Полный сброс сессии
+    setStep(0);
+    setLanguage(null);
+    setClientMode(null);
+    localStorage.removeItem("foodlodge_lang");
+    localStorage.removeItem("foodlodge_mode");
+  };
 
   // --- ЛОГИКА КОРЗИНЫ (только для B2C демо) ---
   const handleSelect = (id: number) => {
@@ -102,12 +128,11 @@ export default function HomePage() {
   // --- СЛОВАРИ ---
   const t = {
     en: {
-      gatewayTitle: "Welcome! How can we help you today?",
+      step1Title: "Welcome! Who are you?",
       gatewayB2B: "For Business (B2B)",
       gatewayB2BSub: "Wholesale, cafes, restaurants",
       gatewayB2C: "For Home (B2C)",
       gatewayB2CSub: "Fresh pastry for you",
-      
       videoTitle: "Bakery for your Business & Home",
       viewProducts: "View Products",
       select: "Select",
@@ -132,12 +157,11 @@ export default function HomePage() {
       footerMsg: "Freshly baked in Cyprus. Delivered with love.",
     },
     tr: {
-      gatewayTitle: "Hoş geldiniz! Size nasıl yardımcı olabiliriz?",
+      step1Title: "Hoş geldiniz! Kimsiniz?",
       gatewayB2B: "İşletmeler İçin (B2B)",
       gatewayB2BSub: "Toptan satış, kafeler, restoranlar",
       gatewayB2C: "Ev İçin (B2C)",
       gatewayB2CSub: "Sizin için taze hamur işleri",
-      
       videoTitle: "İşletmeniz ve Eviniz İçin Fırın",
       viewProducts: "Ürünleri İncele",
       select: "Seç",
@@ -163,100 +187,77 @@ export default function HomePage() {
     }
   };
 
-  const texts = t[language];
+  const texts = t[language || "en"];
 
   return (
     <div className="min-h-screen font-sans text-neutral-800 bg-neutral-50 relative">
       
-      {/* FLOATING WHATSAPP WIDGET */}
-      <a 
-        href="https://wa.me/1234567890" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className={`fixed right-6 z-[900] flex items-center justify-center w-16 h-16 bg-green-500 hover:bg-green-600 text-white rounded-full transition-all shadow-[0_8px_30px_rgba(34,197,94,0.4)] hover:-translate-y-1 active:scale-95 ${
-          clientMode === 'b2c' && totalItemsCount > 0 ? "bottom-32" : "bottom-6"
-        }`}
-        title="Contact Manager on WhatsApp"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
-        </svg>
-      </a>
+      {/* FLOATING WHATSAPP WIDGET (скрыт на квизе) */}
+      {step === 2 && (
+        <a 
+          href="https://wa.me/1234567890" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className={`fixed right-6 z-[900] flex items-center justify-center w-16 h-16 bg-green-500 hover:bg-green-600 text-white rounded-full transition-all shadow-[0_8px_30px_rgba(34,197,94,0.4)] hover:-translate-y-1 active:scale-95 ${
+            clientMode === 'b2c' && totalItemsCount > 0 ? "bottom-32" : "bottom-6"
+          }`}
+          title="Contact Manager on WhatsApp"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+          </svg>
+        </a>
+      )}
 
-      {/* HEADER (ВСЕГДА ВИДЕН) */}
-      <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-orange-100/50 shadow-sm transition-all duration-300">
-        <div className="max-w-6xl mx-auto px-4 lg:px-6 h-20 flex items-center justify-between">
+      {/* ШАГ 0: ВЫБОР ЯЗЫКА */}
+      {step === 0 && (
+        <main key="step-0" className="min-h-screen flex flex-col items-center justify-center bg-orange-50 font-sans p-6 animate-[fade-in_0.5s_ease-out]">
+          <div className="text-7xl mb-8 animate-[bounce_2s_infinite]">🥐</div>
+          <h1 className="text-5xl md:text-6xl font-serif font-extrabold mb-12 tracking-tight text-center drop-shadow-sm text-orange-950">
+            FOOD LODGE
+          </h1>
+          <h2 className="text-2xl font-bold text-neutral-800 mb-10 text-center text-balance">
+            Choose your language / Dilinizi seçin
+          </h2>
+          <div className="flex flex-col sm:flex-row gap-6 w-full max-w-lg">
+            <button
+              onClick={() => handleLangSelect("en")}
+              className="flex-1 flex flex-col items-center justify-center p-8 bg-white border border-transparent rounded-[2rem] shadow-md hover:border-orange-300 hover:shadow-2xl hover:-translate-y-2 transition-all group"
+            >
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🇬🇧</div>
+              <div className="text-xl font-extrabold text-orange-950">English</div>
+            </button>
+            <button
+              onClick={() => handleLangSelect("tr")}
+              className="flex-1 flex flex-col items-center justify-center p-8 bg-white border border-transparent rounded-[2rem] shadow-md hover:border-orange-300 hover:shadow-2xl hover:-translate-y-2 transition-all group"
+            >
+              <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🇹🇷</div>
+              <div className="text-xl font-extrabold text-orange-950">Türkçe</div>
+            </button>
+          </div>
+        </main>
+      )}
+
+      {/* ШАГ 1: ВЫБОР РЕЖИМА B2B/B2C */}
+      {step === 1 && (
+        <main key="step-1" className="min-h-screen flex flex-col items-center justify-center bg-orange-50 font-sans p-6 animate-[fade-in_0.5s_ease-out]">
           
-          {/* Logo */}
-          <div 
-            onClick={() => setClientMode(null)} 
-            className="font-serif text-2xl md:text-3xl font-bold text-orange-900 tracking-wide cursor-pointer flex items-center hover:opacity-80 transition-opacity"
+          {/* Кнопка "Назад" к языку */}
+          <button 
+            onClick={() => setStep(0)}
+            className="absolute top-8 left-8 text-neutral-500 hover:text-orange-900 font-bold flex items-center transition-all bg-white/50 px-4 py-2 rounded-full shadow-sm"
           >
-            <span className="mr-2 text-3xl leading-none">🥐</span> FOOD LODGE
-          </div>
-          
-          {/* Header Controls (Mode + Lang) */}
-          <div className="flex items-center gap-2 md:gap-4">
-            
-            {/* Tiny Mode Switcher (only shows if mode is already selected) */}
-            {clientMode !== null && (
-              <div className="flex bg-neutral-100 p-1 rounded-lg border border-neutral-200 shadow-sm">
-                <button
-                  onClick={() => setClientMode("b2b")}
-                  title={texts.gatewayB2B}
-                  className={`px-3 py-1.5 rounded-md text-lg transition-all ${
-                    clientMode === "b2b" ? "bg-white shadow-sm scale-110" : "opacity-50 hover:opacity-100 grayscale hover:grayscale-0"
-                  }`}
-                >
-                  💼
-                </button>
-                <button
-                  onClick={() => setClientMode("b2c")}
-                  title={texts.gatewayB2C}
-                  className={`px-3 py-1.5 rounded-md text-lg transition-all ${
-                    clientMode === "b2c" ? "bg-white shadow-sm scale-110" : "opacity-50 hover:opacity-100 grayscale hover:grayscale-0"
-                  }`}
-                >
-                  🥐
-                </button>
-              </div>
-            )}
+            ← Back
+          </button>
 
-            {/* Lang Switch Only */}
-            <div className="flex bg-orange-100/50 p-1 rounded-lg border border-orange-200">
-              <button
-                onClick={() => changeLanguage("en")}
-                className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
-                  language === "en" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
-                }`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => changeLanguage("tr")}
-                className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
-                  language === "tr" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
-                }`}
-              >
-                TR
-              </button>
-            </div>
-          </div>
-          
-        </div>
-      </header>
-
-      {/* GATEWAY ONBOARDING: B2B/B2C СЕЛЕКТОР */}
-      {clientMode === null ? (
-        <main className="min-h-screen pt-20 flex flex-col items-center justify-center bg-orange-50 font-sans transition-opacity duration-500">
           <h1 className="text-4xl md:text-5xl font-serif font-extrabold text-orange-950 mb-12 tracking-tight text-center drop-shadow-sm px-4 text-balance">
-            {texts.gatewayTitle}
+            {texts.step1Title}
           </h1>
 
-          <div className="flex flex-col sm:flex-row gap-6 w-full max-w-4xl px-6 pb-20">
+          <div className="flex flex-col sm:flex-row gap-6 w-full max-w-4xl px-6">
             <button 
-              onClick={() => setClientMode("b2b")}
-              className="flex-1 flex flex-col items-center justify-center p-12 bg-white border border-orange-100 rounded-[2.5rem] shadow-md hover:border-orange-300 hover:shadow-2xl hover:-translate-y-2 transition-all group"
+              onClick={() => handleModeSelect("b2b")}
+              className="flex-1 flex flex-col items-center justify-center p-12 bg-white border border-transparent rounded-[2.5rem] shadow-md hover:border-orange-300 hover:shadow-2xl hover:-translate-y-2 transition-all group"
             >
               <div className="text-7xl mb-6 group-hover:scale-110 transition-transform">💼</div>
               <div className="font-extrabold text-3xl text-orange-950 mb-3 text-center">{texts.gatewayB2B}</div>
@@ -264,8 +265,8 @@ export default function HomePage() {
             </button>
             
             <button 
-              onClick={() => setClientMode("b2c")}
-              className="flex-1 flex flex-col items-center justify-center p-12 bg-white border border-orange-100 rounded-[2.5rem] shadow-md hover:border-orange-300 hover:shadow-2xl hover:-translate-y-2 transition-all group"
+              onClick={() => handleModeSelect("b2c")}
+              className="flex-1 flex flex-col items-center justify-center p-12 bg-white border border-transparent rounded-[2.5rem] shadow-md hover:border-orange-300 hover:shadow-2xl hover:-translate-y-2 transition-all group"
             >
               <div className="text-7xl mb-6 group-hover:scale-110 transition-transform">🥐</div>
               <div className="font-extrabold text-3xl text-orange-950 mb-3 text-center">{texts.gatewayB2C}</div>
@@ -273,9 +274,26 @@ export default function HomePage() {
             </button>
           </div>
         </main>
-      ) : (
-        /* MAIN LANDING PAGE CONTENT (Показывается только если clientMode выбран) */
-        <div className="animate-[fade-in_0.5s_ease-out]">
+      )}
+
+      {/* ШАГ 2: ОСНОВНОЙ ЛЕНДИНГ */}
+      {step === 2 && (
+        <div key="step-2" className="animate-[fade-in_0.5s_ease-out]">
+          
+          {/* HEADER (БЕЗ ЯЗЫКОВ И КНОПОК, ТОЛЬКО ЛОГО) */}
+          <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-orange-100/50 shadow-sm transition-all duration-300">
+            <div className="max-w-6xl mx-auto px-4 lg:px-6 h-20 flex items-center justify-center">
+              {/* Logo -> Сброс сессии */}
+              <button 
+                onClick={handleLogoClick}
+                title="Restart Setup"
+                className="font-serif text-2xl md:text-3xl font-bold text-orange-900 tracking-wide flex items-center hover:opacity-80 transition-opacity focus:outline-none"
+              >
+                <span className="mr-2 text-3xl leading-none">🥐</span> FOOD LODGE
+              </button>
+            </div>
+          </header>
+
           {/* БЛОК 1: HERO WITH VIDEO */}
           <section className="relative h-[80vh] w-full bg-neutral-900 overflow-hidden flex items-center justify-center pt-24 md:pt-20">
             <video 
@@ -289,6 +307,9 @@ export default function HomePage() {
             </video>
             
             <div className="relative z-10 text-center px-4 max-w-4xl">
+              <span className="inline-block px-5 py-2 bg-white/20 backdrop-blur-md border border-white/40 text-white font-extrabold rounded-full text-sm mb-6 drop-shadow-md">
+                {clientMode === 'b2b' ? texts.gatewayB2B : texts.gatewayB2C}
+              </span>
               <h1 className="font-serif text-5xl md:text-7xl font-extrabold text-white mb-8 tracking-tight drop-shadow-xl text-balance">
                 {texts.videoTitle}
               </h1>
