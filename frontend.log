@@ -55,3 +55,10 @@
  GET / 200 in 23ms (next.js: 5ms, application-code: 17ms)
  GET /api/homepage 200 in 6ms (next.js: 3ms, application-code: 3ms)
 ✓ Compiled in 16ms
+ GET / 200 in 26ms (next.js: 4ms, application-code: 22ms)
+ GET /api/homepage 200 in 4ms (next.js: 1917µs, application-code: 2ms)
+ GET / 200 in 48ms (next.js: 1439µs, application-code: 47ms)
+ GET /api/homepage 200 in 7ms (next.js: 5ms, application-code: 3ms)
+ GET /api/homepage 200 in 3ms (next.js: 1177µs, application-code: 1508µs)
+ GET /api/homepage 200 in 3ms (next.js: 1105µs, application-code: 1698µs)
+✓ Compiled in 29ms
