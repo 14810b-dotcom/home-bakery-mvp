@@ -227,7 +227,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 lg:px-6 h-20 flex items-center justify-between">
           
           {/* Logo */}
-          <div className="font-serif text-2xl md:text-3xl font-bold text-orange-900 tracking-wide cursor-pointer flex items-center order-1">
+          <div className="font-serif text-2xl md:text-3xl font-bold text-orange-900 tracking-wide cursor-pointer flex items-center">
             <span className="mr-2 text-3xl leading-none">🥐</span> FOOD LODGE
           </div>
           
