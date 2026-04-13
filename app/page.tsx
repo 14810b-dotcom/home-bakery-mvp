@@ -278,9 +278,9 @@ export default function HomePage() {
       {step === 2 && (
         <div key="step-2" className="animate-[fade-in_0.5s_ease-out]">
           
-          {/* HEADER (БЕЗ ЯЗЫКОВ И КНОПОК, ТОЛЬКО ЛОГО) */}
+          {/* HEADER (С ЛОГОТИПОМ, КНОПКАМИ B2B/B2C И СМЕНОЙ ЯЗЫКА) */}
           <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-orange-100/50 shadow-sm transition-all duration-300">
-            <div className="max-w-6xl mx-auto px-4 lg:px-6 h-20 flex items-center justify-center">
+            <div className="max-w-6xl mx-auto px-4 lg:px-6 h-20 flex items-center justify-between">
               {/* Logo -> Сброс сессии */}
               <button 
                 onClick={handleLogoClick}
@@ -289,6 +289,53 @@ export default function HomePage() {
               >
                 <span className="mr-2 text-3xl leading-none">🥐</span> FOOD LODGE
               </button>
+
+              {/* Header Controls (Mode + Lang) */}
+              <div className="flex items-center gap-2 md:gap-4">
+                
+                {/* Tiny Mode Switcher */}
+                <div className="flex bg-neutral-100 p-1 rounded-lg border border-neutral-200 shadow-sm">
+                  <button
+                    onClick={() => handleModeSelect("b2b")}
+                    title={texts.gatewayB2B}
+                    className={`px-3 py-1.5 rounded-md text-lg transition-all ${
+                       clientMode === "b2b" ? "bg-white shadow-sm scale-110" : "opacity-50 hover:opacity-100 grayscale hover:grayscale-0"
+                    }`}
+                  >
+                    💼
+                  </button>
+                  <button
+                    onClick={() => handleModeSelect("b2c")}
+                    title={texts.gatewayB2C}
+                    className={`px-3 py-1.5 rounded-md text-lg transition-all ${
+                       clientMode === "b2c" ? "bg-white shadow-sm scale-110" : "opacity-50 hover:opacity-100 grayscale hover:grayscale-0"
+                    }`}
+                  >
+                    🥐
+                  </button>
+                </div>
+
+                {/* Lang Switch */}
+                <div className="flex bg-orange-100/50 p-1 rounded-lg border border-orange-200">
+                  <button
+                    onClick={() => handleLangSelect("en")}
+                    className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
+                      language === "en" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
+                    }`}
+                  >
+                    EN
+                  </button>
+                  <button
+                    onClick={() => handleLangSelect("tr")}
+                    className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
+                      language === "tr" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
+                    }`}
+                  >
+                    TR
+                  </button>
+                </div>
+              </div>
+
             </div>
           </header>
 
