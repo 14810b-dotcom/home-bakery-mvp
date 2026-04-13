@@ -147,27 +147,54 @@ export default function HomePage() {
   const texts = t[language];
 
   // ---------------------------------------------
-  // SPLASH SCREEN (Языковой селектор)
+  // SPLASH SCREEN (Язык + B2B/B2C Селектор)
   // ---------------------------------------------
   if (!languageSelected) {
     return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-orange-50 font-sans text-orange-950 transition-opacity duration-500">
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-orange-50 font-sans text-orange-950 transition-opacity duration-500 relative">
+        {/* Язык в углу */}
+        <div className="absolute top-6 right-6 flex bg-white p-1 rounded-lg border border-orange-200 shadow-sm">
+            <button
+              onClick={() => setLanguage("en")}
+              className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${
+                language === "en" ? "bg-orange-100 text-orange-900" : "text-orange-700/70"
+              }`}
+            >
+              EN
+            </button>
+            <button
+              onClick={() => setLanguage("tr")}
+              className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${
+                language === "tr" ? "bg-orange-100 text-orange-900" : "text-orange-700/70"
+              }`}
+            >
+              TR
+            </button>
+        </div>
+
         <div className="text-7xl mb-8 animate-[bounce_2s_infinite]">🥐</div>
-        <h1 className="text-5xl md:text-6xl font-serif font-extrabold mb-12 tracking-tight text-center drop-shadow-sm">
+        <h1 className="text-5xl md:text-6xl font-serif font-extrabold mb-10 tracking-tight text-center drop-shadow-sm">
           Home Bakery
         </h1>
-        <div className="flex flex-col gap-5 w-72">
+        
+        <p className="text-xl font-bold text-orange-800/80 mb-8 max-w-sm text-center px-4">
+          {language === 'en' ? "Who are you shopping for today?" : "Bugün kimin için alışveriş yapıyorsunuz?"}
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-5 w-full max-w-2xl px-6">
           <button 
-            onClick={() => { setLanguage("en"); setLanguageSelected(true); }}
-            className="px-8 py-5 bg-orange-600 text-white rounded-2xl font-extrabold text-xl hover:bg-orange-700 shadow-xl shadow-orange-600/30 active:scale-95 transition-all"
+            onClick={() => { setClientMode("b2b"); setLanguageSelected(true); }}
+            className="flex-1 px-8 py-10 bg-white border-2 border-orange-200 text-orange-950 rounded-[2rem] hover:ring-4 hover:ring-orange-200 hover:-translate-y-1 shadow-xl shadow-orange-900/5 active:scale-95 transition-all group"
           >
-            English
+            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">💼</div>
+            <div className="font-extrabold text-2xl">{texts.modeB2B}</div>
           </button>
           <button 
-            onClick={() => { setLanguage("tr"); setLanguageSelected(true); }}
-            className="px-8 py-5 bg-orange-600 text-white rounded-2xl font-extrabold text-xl hover:bg-orange-700 shadow-xl shadow-orange-600/30 active:scale-95 transition-all"
+            onClick={() => { setClientMode("b2c"); setLanguageSelected(true); }}
+            className="flex-1 px-8 py-10 bg-white border-2 border-orange-200 text-orange-950 rounded-[2rem] hover:ring-4 hover:ring-orange-200 hover:-translate-y-1 shadow-xl shadow-orange-900/5 active:scale-95 transition-all group"
           >
-            Türkçe
+            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🏠</div>
+            <div className="font-extrabold text-2xl">{texts.modeB2C}</div>
           </button>
         </div>
       </div>
@@ -180,69 +207,47 @@ export default function HomePage() {
   return (
     <div className="min-h-screen font-sans text-neutral-800 bg-neutral-50 relative pb-28 md:pb-24">
       
-      {/* HEADER (сквозной, не входит в счет 5 основных блоков) */}
+      {/* FLOATING WHATSAPP WIDGET */}
+      <a 
+        href="https://wa.me/1234567890" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className={`fixed right-6 z-[900] flex items-center justify-center w-16 h-16 bg-green-500 hover:bg-green-600 text-white rounded-full transition-all shadow-[0_8px_30px_rgba(34,197,94,0.4)] hover:-translate-y-1 active:scale-95 ${
+          clientMode === 'b2c' && totalItemsCount > 0 ? "bottom-32" : "bottom-6"
+        }`}
+        title="Contact Manager on WhatsApp"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+        </svg>
+      </a>
+
+      {/* HEADER */}
       <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-orange-100/50 shadow-sm transition-all duration-300">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 min-h-[5rem] flex flex-wrap items-center justify-between gap-y-4">
+        <div className="max-w-6xl mx-auto px-4 lg:px-6 h-20 flex items-center justify-between">
           
           {/* Logo */}
-          <div className="font-serif text-2xl md:text-3xl font-bold text-orange-900 tracking-wide cursor-pointer flex items-center order-1">
+          <div className="font-serif text-2xl md:text-3xl font-bold text-orange-900 tracking-wide cursor-pointer flex items-center">
             <span className="mr-2 text-3xl leading-none">🥐</span> Home Bakery
           </div>
           
-          {/* Right Side: WA + Lang Switch (Right on Desktop, Right on Mobile) */}
-          <div className="flex items-center gap-3 order-2 md:order-3">
-            
-            {/* WhatsApp Manager Link */}
-            <a 
-              href="https://wa.me/1234567890" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center justify-center p-2.5 bg-green-500 hover:bg-green-600 text-white rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
-              title="Contact Manager on WhatsApp"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
-              </svg>
-            </a>
-            
-            {/* Lang Switch */}
-            <div className="flex bg-orange-100/50 p-1 rounded-lg border border-orange-200">
-              <button
-                onClick={() => setLanguage("en")}
-                className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
-                  language === "en" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
-                }`}
-              >
-                EN
-              </button>
-              <button
-                onClick={() => setLanguage("tr")}
-                className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
-                  language === "tr" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
-                }`}
-              >
-                TR
-              </button>
-            </div>
-          </div>
-
-          {/* B2B / B2C Switcher (Center on Desktop, Full width on Mobile) */}
-          <div className="flex bg-neutral-100 p-1 rounded-xl w-full md:w-auto order-3 md:order-2">
+          {/* Right Side: Lang Switch Only */}
+          <div className="flex bg-orange-100/50 p-1 rounded-lg border border-orange-200">
             <button
-              onClick={() => setClientMode("b2b")}
-              className={`flex-1 md:px-6 py-2.5 text-center rounded-lg font-bold text-sm md:text-base transition-all duration-300 ${
-                clientMode === "b2b" ? "bg-white text-orange-600 shadow-sm" : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-200/50"
+              onClick={() => setLanguage("en")}
+              className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
+                language === "en" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
               }`}
             >
-              💼 {texts.modeB2B}
+              EN
             </button>
             <button
-              onClick={() => setClientMode("b2c")}
-              className={`flex-1 md:px-6 py-2.5 text-center rounded-lg font-bold text-sm md:text-base transition-all duration-300 ${
-                clientMode === "b2c" ? "bg-white text-orange-600 shadow-sm" : "text-neutral-500 hover:text-neutral-700 hover:bg-neutral-200/50"
+              onClick={() => setLanguage("tr")}
+              className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
+                language === "tr" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
               }`}
             >
-              🏠 {texts.modeB2C}
+              TR
             </button>
           </div>
           
