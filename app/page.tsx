@@ -44,10 +44,8 @@ export default function HomePage() {
       setLanguage(savedLang);
       setClientMode(savedMode);
       setStep(2);
-    } else if (savedLang) {
-      setLanguage(savedLang);
-      setStep(1);
     }
+    // Если сессия неполная (например, остался старый кэш языка), оставляем пользователя на шаге 0
   }, []);
 
   // --- ФЕТЧ ИЗ API ---
