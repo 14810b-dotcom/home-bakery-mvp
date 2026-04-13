@@ -205,7 +205,7 @@ export default function HomePage() {
   // ОСНОВНОЙ ЛАЙАУТ (5 БЛОКОВ)
   // ---------------------------------------------
   return (
-    <div className="min-h-screen font-sans text-neutral-800 bg-neutral-50 relative pb-28 md:pb-24">
+    <div className="min-h-screen font-sans text-neutral-800 bg-neutral-50 relative">
       
       {/* FLOATING WHATSAPP WIDGET */}
       <a 
@@ -500,8 +500,9 @@ export default function HomePage() {
             {texts.footerMsg}
           </p>
           <div className="flex flex-col gap-2 font-medium">
-            <span>+357 (99) 123-4567</span>
-            <span>orders@homebakery.cy</span>
+            <span>📍 Nicosia, Cyprus 1080</span>
+            <span>📞 +357 (99) 123-4567</span>
+            <span>✉️ orders@foodlodge.cy</span>
           </div>
           <div className="mt-12 text-sm text-neutral-600 font-semibold">
             &copy; 2026 FOOD LODGE Cyprus. All rights reserved.
