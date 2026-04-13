@@ -22,6 +22,18 @@ export default function HomePage() {
   // --- СТЕЙТЫ ---
   const [language, setLanguage] = useState<Language>("en");
   const [clientMode, setClientMode] = useState<ClientMode | null>(null);
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem("foodlodge_lang") as Language | null;
+    if (savedLang === "en" || savedLang === "tr") {
+      setLanguage(savedLang);
+    }
+  }, []);
+
+  const changeLanguage = (lang: Language) => {
+    setLanguage(lang);
+    localStorage.setItem("foodlodge_lang", lang);
+  };
   
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -183,24 +195,52 @@ export default function HomePage() {
             <span className="mr-2 text-3xl leading-none">🥐</span> FOOD LODGE
           </div>
           
-          {/* Right Side: Lang Switch Only */}
-          <div className="flex bg-orange-100/50 p-1 rounded-lg border border-orange-200">
-            <button
-              onClick={() => setLanguage("en")}
-              className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
-                language === "en" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
-              }`}
-            >
-              EN
-            </button>
-            <button
-              onClick={() => setLanguage("tr")}
-              className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
-                language === "tr" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
-              }`}
-            >
-              TR
-            </button>
+          {/* Header Controls (Mode + Lang) */}
+          <div className="flex items-center gap-2 md:gap-4">
+            
+            {/* Tiny Mode Switcher (only shows if mode is already selected) */}
+            {clientMode !== null && (
+              <div className="flex bg-neutral-100 p-1 rounded-lg border border-neutral-200 shadow-sm">
+                <button
+                  onClick={() => setClientMode("b2b")}
+                  title={texts.gatewayB2B}
+                  className={`px-3 py-1.5 rounded-md text-lg transition-all ${
+                    clientMode === "b2b" ? "bg-white shadow-sm scale-110" : "opacity-50 hover:opacity-100 grayscale hover:grayscale-0"
+                  }`}
+                >
+                  💼
+                </button>
+                <button
+                  onClick={() => setClientMode("b2c")}
+                  title={texts.gatewayB2C}
+                  className={`px-3 py-1.5 rounded-md text-lg transition-all ${
+                    clientMode === "b2c" ? "bg-white shadow-sm scale-110" : "opacity-50 hover:opacity-100 grayscale hover:grayscale-0"
+                  }`}
+                >
+                  🥐
+                </button>
+              </div>
+            )}
+
+            {/* Lang Switch Only */}
+            <div className="flex bg-orange-100/50 p-1 rounded-lg border border-orange-200">
+              <button
+                onClick={() => changeLanguage("en")}
+                className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
+                  language === "en" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
+                }`}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => changeLanguage("tr")}
+                className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${
+                  language === "tr" ? "bg-white text-orange-900 shadow-sm" : "text-orange-700/70 hover:text-orange-900"
+                }`}
+              >
+                TR
+              </button>
+            </div>
           </div>
           
         </div>
