@@ -174,7 +174,7 @@ export default function HomePage() {
 
         <div className="text-7xl mb-8 animate-[bounce_2s_infinite]">🥐</div>
         <h1 className="text-5xl md:text-6xl font-serif font-extrabold mb-10 tracking-tight text-center drop-shadow-sm">
-          Home Bakery
+          FOOD LODGE
         </h1>
         
         <p className="text-xl font-bold text-orange-800/80 mb-8 max-w-sm text-center px-4">
@@ -227,8 +227,8 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 lg:px-6 h-20 flex items-center justify-between">
           
           {/* Logo */}
-          <div className="font-serif text-2xl md:text-3xl font-bold text-orange-900 tracking-wide cursor-pointer flex items-center">
-            <span className="mr-2 text-3xl leading-none">🥐</span> Home Bakery
+          <div className="font-serif text-2xl md:text-3xl font-bold text-orange-900 tracking-wide cursor-pointer flex items-center order-1">
+            <span className="mr-2 text-3xl leading-none">🥐</span> FOOD LODGE
           </div>
           
           {/* Right Side: Lang Switch Only */}
@@ -494,7 +494,7 @@ export default function HomePage() {
       <footer className="bg-neutral-900 text-neutral-400 py-16 px-6">
         <div className="max-w-6xl mx-auto flex flex-col items-center text-center">
           <div className="font-serif text-3xl font-bold text-white mb-4 flex items-center">
-            <span className="mr-3">🥐</span> Home Bakery
+            <span className="mr-3">🥐</span> FOOD LODGE
           </div>
           <p className="text-lg text-neutral-300 font-medium mb-8 max-w-md">
             {texts.footerMsg}
@@ -504,7 +504,7 @@ export default function HomePage() {
             <span>orders@homebakery.cy</span>
           </div>
           <div className="mt-12 text-sm text-neutral-600 font-semibold">
-            &copy; 2026 Home Bakery Cyprus. All rights reserved.
+            &copy; 2026 FOOD LODGE Cyprus. All rights reserved.
           </div>
         </div>
       </footer>
