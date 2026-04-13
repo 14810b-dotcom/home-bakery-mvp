@@ -521,10 +521,10 @@ export default function HomePage() {
               <p className="text-lg text-neutral-300 font-medium mb-8 max-w-md">
                 {texts.footerMsg}
               </p>
-              <div className="flex flex-col gap-2 font-medium">
+              <div className="flex flex-col gap-2 font-medium text-neutral-300">
                 <span>📍 Nicosia, Cyprus 1080</span>
-                <span>📞 +357 (99) 123-4567</span>
-                <span>✉️ orders@foodlodge.cy</span>
+                <a href="tel:+357991234567" className="hover:text-orange-400 transition-colors">📞 +357 (99) 123-4567</a>
+                <a href="mailto:orders@foodlodge.cy" className="hover:text-orange-400 transition-colors">✉️ orders@foodlodge.cy</a>
               </div>
               <div className="mt-12 text-sm text-neutral-600 font-semibold">
                 &copy; 2026 FOOD LODGE Cyprus. All rights reserved.
